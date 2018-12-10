@@ -296,37 +296,13 @@ env:
 addons:
   apt:
     packages:
-    - lxc
-    - lxc-dev
-  snaps:
-  - lxd
-  #- lxd-client
+    - lxd
+    - lxd-client
 before_install:
-#- mkdir -p ~/.config/lxc
-#- echo "lxc.id_map = u 0 100000 65536" > ~/.config/lxc/default.conf
-#- echo "lxc.id_map = g 0 100000 65536" >> ~/.config/lxc/default.conf
-#- echo "lxc.network.type = veth" >> ~/.config/lxc/default.conf
-#- echo "lxc.network.link = lxcbr0" >> ~/.config/lxc/default.conf
-#- echo "$USER veth lxcbr0 2" | sudo tee -a /etc/lxc/lxc-usernet
-#- |
-#    while [ ! -S /var/snap/lxd/common/lxd/unix.socket ]
-#    do
-#        echo -n "Waiting for LXD socket..."
-#        sleep 0.2
-#        echo -n .
-#    done
-#    echo -n
-
-# create profile
+# Wait for LXD to be ready
 - sudo lxd waitready
-- printf 'n\ny\ndefault\ndir\nn\ny\nlxdbr0\nauto\nauto\ny\nall\n\ny\nn\n' | sudo lxd init
-- yes | sudo lxd.migrate
-- sudo lxd.lxc profile copy default travis
-- sudo lxd.lxc profile set travis security.privileged true
-#- sudo lxd init --auto
-#- sudo usermod -a -G lxd travis
-#- sudo su travis -c 'lxc network create lxdbr0'
-#- sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
+# Init LXD server with defaults
+- sudo lxd init --auto
 - gem install inspec rubocop
 - export TOXENV=$(echo $TOXENV_TMPL | envsubst)
 install:
